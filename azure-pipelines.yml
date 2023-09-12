@@ -50,7 +50,7 @@ steps:
     displayName: 'Publish the app to Azure'
     inputs:
       ConnectionType: AzureRM
-      azureSubscription: 'Westcoastconnection'
+      azureSubscription: 'westcoastconnection'
       appType: webApp
       WebAppName: 'westcoastcarss'
       package: '$(Build.ArtifactStagingDirectory)/Release/*.zip'
