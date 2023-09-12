@@ -1,0 +1,36 @@
+# my first attempt to write a yaml pipeline
+trigger:
+ - main
+
+pool:
+ vmImage: ubuntu-latest
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'Restoring dependencies'
+    inputs:
+      command: restore #dotnet restore
+      projects: '**/*.csproj'
+
+# create a build task.
+  - task: DotNetCoreCLI@2
+    displayName: 'Build the project'
+    inputs:
+     command: build # dotnet build --no-restore --configuration Release
+     arguments: '--no-restore --configuration Release'
+     projects: '**/*.csproj'
+
+# publish the project create an artifact
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish the project,create an artifact'
+    inputs:
+      command: publish #dotnet publish --no-restore --configuration Release --output $(???)/Release
+      projects: '**/*.csproj'
+      publishWebProjects: false
+      arguments: '--no-restore --configuration Release --output $(Build.ArtifactStagingDirectory)/Release'
+      zipAfterPublish: true
+
+# publish the artifact  to our folder
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish the artifact to our drop folder'
+    condition: succeeded()
